@@ -1,0 +1,206 @@
+#!/bin/bash
+# alias.sh
+alias cls='printf "\033c"' 
+shopt -s expand_aliases
+
+main () {
+	echo "Welcome to ECC tools for Linux"
+	read -n 1 -s -r -p "Press any key to continue"
+}
+menu () {
+	while true; do
+		echo -e "PLEASE CHOOSE FROM THE FOLLOWING OPTIONS\r\n1 - ECC Version Check\r\n2 - Clear Current Daemon\r\n3 - Clear Banlist and Peers\r\n4 - Clear Data Directory (will not remove wallet files)\r\n5 - Exit"
+	read choice
+	echo
+	case $choice in
+		1)
+		cls
+		version_check
+		;;
+		2)
+		cls
+		clear_daemon
+		;;
+		3)
+		clear_ban_peer
+		;;
+		4)
+		clear_data
+		;;
+		5)
+		cls
+		exit
+		;;
+		*)
+		cls
+		;;
+	esac
+	done
+}
+
+version_check () {
+	if [ -d ~/'.eccoin-wallet' ]; then
+		cd ~/'.eccoin-wallet'
+		if [ -f "wallet-version.txt" ]; then
+					CUR_D=$(cat 'wallet-version.txt')
+					echo "ECC Daemon detected - Version: $CUR_D"
+					echo
+		elif [ -e "Eccoind.app" ]; then
+			echo "ECC Daemon detected - Version unknown." 
+			echo
+		else
+			echo "ECC Daemon not detected."
+			echo
+		fi
+	else
+		echo "Directory (/.eccoin-wallet) does not exist."
+        echo
+	fi	
+}
+
+clear_daemon () {
+	version_check
+	if [ -d ~/'.eccoin-wallet' ]; then
+			while true; do
+				echo -e "Enter "D" to clear daemon directory.\r\nEnter "E" to return to main menu." 
+				read choice
+				echo
+				case $choice in
+					E)
+						cls
+						menu
+					;;
+					D)
+						rm -rf ~/'.eccoin-wallet' && mkdir ~/'.eccoin-wallet'
+						cls
+						echo "Daemon directory has been cleared."
+						echo
+						menu
+					;;
+					*)
+						cls
+					;;
+				esac
+			done
+	else
+        cls
+        echo "Directory (/.eccoin-wallet) does not exist."
+        echo
+		menu
+	fi	
+}
+
+clear_ban_peer () {
+	cls
+	if [ -d ~/'.eccoin' ]; then
+		echo "Data directory found."
+		echo
+		cd ~/'.eccoin'/
+		while true; do
+			echo -e "Enter "D" to remove banlist.dat and peers.dat\r\nEnter "E" to return to main menu." 
+			read choice
+			echo
+			case $choice in
+				D)
+					if [ -f "peers.dat" ]; then 
+						rm -rfv peers.dat 
+					fi
+					if [ -f "banlist.dat" ]; then 
+						rm -rfv banlist.dat 
+					fi			
+					cls
+					echo "Banlist.dat and peers.dat removed"
+					echo
+					menu		
+				;;
+				E)
+					cls
+					menu
+				;;
+				*)
+					cls
+				;;
+			esac
+		done
+	else
+        cls
+        echo "Data directory (/eccoin) does not exist."
+        echo
+		menu
+	fi
+}
+
+clear_data () {
+	cls	
+	if [ -d ~/'.eccoin' ]; then
+		echo "Data directory found."	
+		echo
+		cd ~/'.eccoin'/
+		while true; do
+		echo -e "Enter "D" to clear directory.\r\nEnter "E" to return to main menu." 
+		read choice
+		echo
+		case $choice in	
+			D)
+				if [ -d "blocks" ]; then 
+					rm -rf blocks 	
+				fi
+				if [ -d "chainstate" ]; then 
+					rm -rf chainstate
+				fi
+				if [ -d "database" ]; then 
+					rm -rf database
+				fi
+				if [ -d "services" ]; then
+					rm -rf services
+				fi
+				if [ -f ".lock" ]; then
+					rm -rf '.lock' 
+				fi
+				if [ -f "db.log" ]; then 
+					rm -rf db.log 
+				fi
+				if [ -f "debug.log" ]; then 
+					rm -rf debug.log
+				fi
+				if [ -f "eccoin.conf" ]; then 
+					rm -rf eccoin.conf
+				fi
+				if [ -f "eccoind.pid" ]; then 
+					rm -rf eccoind.pid 
+				fi
+				if [ -f "peers.dat" ]; then 
+					rm -rf peers.dat 
+				fi
+				if [ -f "banlist.dat" ]; then 
+					rm -rf banlist.dat 
+				fi
+				if [ -f "fee_estimates.dat" ]; then 
+					rm -rf fee_estimates.dat 
+				fi
+				cls
+				echo "Data directory (/eccoin) cleared"
+				echo
+				menu
+			;;
+			E)
+				cls
+				menu
+			;;
+			*)
+				cls
+			;;
+		esac
+		done
+	else
+        cls
+        echo "Data directory (/eccoin) does not exist."
+        echo
+        menu
+	fi
+}
+cls
+main
+cls
+menu
+exit
