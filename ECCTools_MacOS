@@ -1,15 +1,16 @@
 #!/bin/bash
 # alias.sh
+D_VERS="0.2.5.11"
 alias cls='printf "\033c"' 
 shopt -s expand_aliases
 
 main () {
-	echo "Welcome to ECC tools for Linux"
+	echo "Welcome to ECC tools for MacOS"
 	read -n 1 -s -r -p "Press any key to continue"
 }
 menu () {
 	while true; do
-		echo -e "PLEASE CHOOSE FROM THE FOLLOWING OPTIONS\r\n1 - ECC Version Check\r\n2 - Clear Current Daemon\r\n3 - Clear Banlist and Peers\r\n4 - Clear Data Directory (will not remove wallet files)\r\n5 - Exit"
+		echo -e "PLEASE CHOOSE FROM THE FOLLOWING OPTIONS\r\n1 - ECC Version Check\r\n2 - Clear Current Daemon\r\n3 - Clear Banlist and Peers\r\n4 - Clear Data Directory (will not remove wallet files)\r\n5 - Clear Sapphire Directory\r\n6 Exit"
 	read choice
 	echo
 	case $choice in
@@ -28,6 +29,9 @@ menu () {
 		clear_data
 		;;
 		5)
+		clear_sapphire
+		;;
+		6)
 		cls
 		exit
 		;;
@@ -180,6 +184,82 @@ clear_data () {
 				fi
 				cls
 				echo "Data directory (/eccoin) cleared"
+				echo
+				menu
+			;;
+			E)
+				cls
+				menu
+			;;
+			*)
+				cls
+			;;
+		esac
+		done
+	else
+        cls
+        echo "Data directory (/eccoin) does not exist."
+        echo
+        menu
+	fi
+}
+
+clear_sapphire () {
+	cls	
+	if [ -d ~/Library/'Application Support'/Sapphire ]; then
+		echo "Data directory found."	
+		echo
+		cd ~/Library/'Application Support'/Sapphire/
+		while true; do
+		echo -e "Enter "D" to clear directory.\r\nEnter "E" to return to main menu." 
+		read choice
+		echo
+		case $choice in	
+			D)
+				if [ -d "Cache" ]; then 
+					rm -rf Cache 	
+				fi
+				if [ -d "GPUCache" ]; then 
+					rm -rf GPUCache
+				fi
+				if [ -d "Local Storage" ]; then 
+					rm -rf Local\ Storage
+				fi
+				if [ -f "ansAddressesInfo.json" ]; then
+					rm -rf ansAddressesInfo.json
+				fi
+				if [ -f "Cookies" ]; then
+					rm -rf Cookies 
+				fi
+				if [ -f "Cookies-journal" ]; then 
+					rm -rf Cookies-journal 
+				fi
+				if [ -f "database.sqlite" ]; then 
+					rm -rf database.sqlite
+				fi
+				if [ -f "db.json" ]; then 
+					rm -rf db.json
+				fi
+				if [ -f "notificationsInfo.json" ]; then 
+					rm -rf notificationsInfo.json 
+				fi
+				if [ -f "Preferences" ]; then 
+					rm -rf Preferences 
+				fi
+				if [ -f "Settings" ]; then 
+					rm -rf Settings 
+				fi
+				if [ -f "SingletonCookie" ]; then 
+					rm -rf SingletonCookie 
+				fi
+				if [ -f "SingletonLock" ]; then 
+					rm -rf SingletonLock 
+				fi
+				if [ -f "SS" ]; then 
+					rm -rf SS 
+				fi
+				cls
+				echo "Data directory (/Sapphire) cleared"
 				echo
 				menu
 			;;
